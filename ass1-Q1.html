@@ -1,0 +1,257 @@
+<html>
+<head>
+<script>
+
+
+const items=[1,2,3,4,5,6,7,8,9,10]; 
+
+
+window.addEventListener('DOMContentLoaded', ()=>{
+const itemnoid = document.querySelector("#itemno");
+itemnoid.addEventListener('blur',()=>{
+console.log("blur event");
+
+let itemno= document.querySelector("#itemno").value;
+console.log("input is" + itemno);
+let output= getItemDetailsLogic(itemno);
+if(output.result)
+{  
+	document.querySelector("#Add").disabled=true;
+    document.querySelector("#Edit").disabled=false;
+	document.querySelector("#Delete").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#Oddpos").disabled=false;
+	document.querySelector("#msg").innerText="item No found";
+
+}
+else
+{
+    document.querySelector("#Add").disabled=false;
+    document.querySelector("#Edit").disabled=true;
+	document.querySelector("#Delete").disabled=true;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#Oddpos").disabled=false;
+	document.querySelector("#msg").innerText="item No not found";
+	
+
+
+}
+});
+
+
+const Add = document.querySelector("#Add");
+Add.addEventListener('click',()=>{
+
+//intelligence begins
+let input=document.querySelector("#itemno").value;
+console.log(input);
+let output=addItemDetailsLogic(input);//just true or false or just an int or a string is
+//standard kids disease
+
+if(output)
+{
+    console.log(output);
+	document.querySelector("#msg").innerText=" Add item successfully";
+}
+else
+{
+	document.querySelector("#msg").innerText="  Adding item failed";
+}
+
+
+});
+
+const Delete = document.querySelector("#Delete");
+Delete.addEventListener('click',()=>{
+let input= document.querySelector("#itemno").value;
+
+console.log(input);
+let output=removeItemDetailsLogic(input);
+
+console.log("after delte function" + output);
+
+if(output)
+{
+document.querySelector("#msg").innerText="delete item successfully";
+      document.querySelector("#Add").disabled=true;
+    document.querySelector("#Edit").disabled=false;
+	document.querySelector("#Delete").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#Oddpos").disabled=false;
+
+
+}
+else
+{
+document.querySelector("#msg").innerText="delete item failed";
+
+    document.querySelector("#Add").disabled=true;
+    document.querySelector("#Edit").disabled=false;
+	document.querySelector("#Delete").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#Oddpos").disabled=false;
+
+}
+
+});
+
+
+
+const Viewall = document.querySelector("#Viewall");
+Viewall.addEventListener('click',()=>{
+console.log("View all");
+showAllItems();
+});//end of event handling setup for buttons
+
+const Oddpos = document.querySelector("#Oddpos");
+Oddpos.addEventListener('click',()=>{
+console.log("Odd pos");
+oddposition();
+
+
+});//end of event han
+
+const Edit = document.querySelector("#Edit");
+Edit.addEventListener('click',()=>{
+//intelligence begins
+let input= document.querySelector("#itemno").value;
+console.log(input);
+let output =EditItemDetailsLogic(input);//just true or false or just an int or a string is
+//standard kids disease.
+
+//intelligence ends here..
+if(output)
+{
+document.querySelector("#msg").innerText="Edit item sucessfully";
+document.querySelector("#Add").disabled=true;
+    document.querySelector("#Edit").disabled=false;
+	document.querySelector("#Delete").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#Oddpos").disabled=false;
+
+
+}
+else
+{
+document.querySelector("#msg").innerText="Edit item failed";
+document.querySelector("#Add").disabled=true;
+    document.querySelector("#Edit").disabled=false;
+	document.querySelector("#Delete").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#Oddpos").disabled=false;
+}
+
+
+});
+
+function oddposition()
+{
+    let msg="";
+
+    for(let i=0; i < items.length; i++)
+{
+   
+if((i%2)==1 || i==0)
+{	
+    msg+=  "<Br/>"+items[i] ;
+    document.querySelector("#contents").innerHTML=msg;
+}
+
+}
+
+}
+
+function showAllItems()
+{
+    console.log("show all items");
+	
+	
+	let output=items;
+	
+	
+	
+	let msg="";
+	for(let i=0; i < output.length; i++) 
+	  msg+= "<Br/>" + output[i] ;
+	  document.querySelector("#contents").innerHTML=msg;
+
+
+}
+
+function getItemDetailsLogic(itemno)
+{
+let output ={ result:false,x:0};
+for(let i=0; i < items.length; i++)
+{
+if(items[i] == itemno )
+{	
+	output.result=true;
+    output.x=i
+	break;
+}
+
+}
+return output;
+}
+
+function addItemDetailsLogic(input){
+    let output=false;
+    for(let i=0; i < items.length; i++)
+{
+          if(items.includes(input))
+                  break;
+            else
+              { items.push(input);
+                output=true}
+}
+return output;
+}
+function removeItemDetailsLogic(input)
+{
+let output =false;
+for(let i=0; i < items.length; i++)
+{
+if(items[i] == input )
+{	
+	items.splice(i,1); 
+	break;
+}
+
+}
+console.log("inside delte function" + output);
+return output;
+}
+
+
+
+function EditItemDetailsLogic(input)
+{
+console.log(input);
+let output =false;
+let Z= getItemDetailsLogic(input);
+let Y = prompt("Please enter your Number", "");
+  if (Y != null) {
+items[Z.x]=Y;
+output=true;
+
+}
+return output;
+}
+});
+
+</script>
+<style>
+</style>
+</head>
+<body>
+<hr/>
+<input type="text" id="itemno" placeholder="Number"/>  <span id="msg"> what happened</span><br>
+<Br/><button id="Add" disabled>Add</button>
+<button id="Edit" disabled> Edit</button>
+<button id="Delete" disabled> delete</button>
+<button id="Viewall" disabled> View all </button>
+<button id="Oddpos" disabled> show odd pos </button>
+<hr/>
+<p id="contents" > we will show contents here </p>
+</body>
+</html>

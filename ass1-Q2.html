@@ -1,0 +1,263 @@
+<html>
+<head>
+<script>
+
+window.addEventListener('DOMContentLoaded', ()=>{
+
+let emp=[]; 
+
+emp.push({empno:1,empname:"Girish",email:"girish@gmail.com",deptno:10})
+emp.push({empno:2,empname:"Kaustubh",email:"kaustubh@gmail.com",deptno:20});
+emp.push({empno:3,empname:"Ganesh",email:"ganesh@gmail.com",deptno:30});
+emp.push({empno:4,empname:"jay",email:"jay@gmail.com",deptno:40});
+
+    function viewdept()
+{
+    let msg="";
+    let d=10;
+    for(let i=0; i < emp.length; i++)
+    {    
+    for(let j=0; j < emp.length;j++)
+    {
+        if(emp[j].deptno==d){
+    msg+= "<Br/>" +emp[j].empno +  " --- " + emp[j].empname+
+	  "--"+ emp[j].email+"--"+emp[j].deptno;
+    document.querySelector("#contents").innerHTML=msg;
+    }
+    }
+    d=d+10;
+    }
+}
+
+
+function showAllItems()
+{
+    console.log("show all items");
+	let output=emp;
+	let msg="";
+	for(let i=0; i < output.length; i++) //dinosaur way..
+    msg+= "<Br/>" + output[i].empno +  " --- " + output[i].empname+
+	  "--"+ output[i].email+"--"+output[i].deptno;
+	  document.querySelector("#contents").innerHTML=msg;
+
+
+}
+
+function getItemDetailsLogic(empno)
+{
+    let output ={ result:false, empdetails:{}};
+for(let i=0; i < emp.length; i++)
+{
+if(emp[i].empno == empno)
+{	
+	output.result=true;
+    output.empdetails=emp[i];
+	break;
+}
+
+}
+return output;
+}
+
+function addItemDetailsLogic(input){
+    let output=false;
+   emp.push(input);
+  output=true;
+
+return output;
+}
+
+function modifyItemDetailsLogic(input)
+{
+console.log(input.empno);
+let output =false;
+for(let i=0; i < emp.length; i++)
+{
+if(emp[i].empno == input.empno )
+{	
+	emp[i].empname=input.empname;
+	emp[i].email=input.email;
+    emp[i].deptno=input.deptno;
+	output=true;
+	
+	break;
+}
+
+}
+return output;
+}
+
+
+function removeItemDetailsLogic(input)
+{
+let output =false;
+for(let i=0; i < emp.length; i++)
+{
+if(emp[i].empno == input )
+{	
+	emp.splice(i,1); 
+	output=true;
+	break;
+}
+
+}
+return output;
+}
+	
+
+let empno = document.querySelector("#empno");
+empno.addEventListener('blur',()=>{
+console.log("blur event");
+
+let empno = document.querySelector("#empno").value;
+console.log("input is" + empno);
+let output= getItemDetailsLogic(empno);
+
+if(output.result)
+{  
+    document.querySelector("#msg").innerText="item details found";
+    document.querySelector("#empname").value=output.empdetails.empname;
+	document.querySelector("#email").value=output.empdetails.email;
+    document.querySelector("#deptno").value=output.empdetails.deptno;
+	document.querySelector("#Add").disabled=true;
+    document.querySelector("#Modify").disabled=false;
+	document.querySelector("#Remove").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#viewondept").disabled=false;
+}
+else
+{
+    document.querySelector("#msg").innerText="item no not found";
+    document.querySelector("#empname").value="";
+	document.querySelector("#email").value="";
+    document.querySelector("#deptno").value="";
+    document.querySelector("#Add").disabled=false;
+    document.querySelector("#Modify").disabled=true;
+	document.querySelector("#Remove").disabled=true;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#viewondept").disabled=false;
+}
+});
+
+let Add = document.querySelector("#Add");
+Add.addEventListener('click',()=>{
+let input= {empno:document.querySelector("#empno").value,
+empname:document.querySelector("#empname").value,
+email:document.querySelector("#email").value,
+deptno:document.querySelector("#deptno").value};
+console.log(input);
+let output=addItemDetailsLogic(input);
+if(output)
+{
+    console.log(output);
+	document.querySelector("#msg").innerText=" Add successfully";
+    document.querySelector("#Add").disabled=false;
+}
+else
+{
+	document.querySelector("#msg").innerText="  Not Add successfully";
+}
+
+
+
+});
+let Modify = document.querySelector("#Modify");
+Modify.addEventListener('click',()=>{
+
+//intelligence begins
+let input= {empno:document.querySelector("#empno").value,
+empname:document.querySelector("#empname").value,
+email:document.querySelector("#email").value,
+deptno:document.querySelector("#deptno").value};
+console.log(input);
+let output=modifyItemDetailsLogic(input);
+if(output)
+{
+document.querySelector("#msg").innerText="update suceeded";
+    document.querySelector("#Add").disabled=true;
+    document.querySelector("#Modify").disabled=false;
+	document.querySelector("#Remove").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#viewondept").disabled=false;
+
+}
+else
+{
+document.querySelector("#msg").innerText="update failed";
+
+    document.querySelector("#Add").disabled=true;
+    document.querySelector("#Modify").disabled=false;
+	document.querySelector("#Remove").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#viewondept").disabled=false;
+
+}
+
+
+});
+
+let Remove = document.querySelector("#Remove");
+Remove.addEventListener('click',()=>{
+let input= document.querySelector("#empno").value;
+
+console.log(input);
+let output=removeItemDetailsLogic(input);
+if(output)
+{
+document.querySelector("#msg").innerText="Remove sucessfully";
+document.querySelector("#Add").disabled=true;
+    document.querySelector("#Modify").disabled=true;
+	document.querySelector("#Remove").disabled=true;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#viewondept").disabled=false;
+}
+else
+{
+document.querySelector("#msg").innerText="Removed failed";
+
+    document.querySelector("#Add").disabled=true;
+    document.querySelector("#Modify").disabled=false;
+	document.querySelector("#Remove").disabled=false;
+	document.querySelector("#Viewall").disabled=false;
+    document.querySelector("#viewondept").disabled=false;
+
+}
+
+});
+
+
+let Viewall = document.querySelector("#Viewall");
+Viewall.addEventListener('click',()=>{
+console.log("View all");
+showAllItems();
+});
+
+let viewondept = document.querySelector("#viewondept");
+viewondept.addEventListener('click',()=>{
+console.log("viewondept");
+viewdept();
+
+
+});
+
+});
+
+</script>
+<style>
+</style>
+</head>
+<body>
+<hr/>
+<input type="text" id="empno" placeholder="EMP NO"/>  <span id="msg"> what happened</span><br>
+<input type="text" id="empname" placeholder="EMP NAME"/> <br>
+<input type="text" id="email" placeholder="EMAIL"/> <br>
+<input type="text" id="deptno" placeholder="DEPT NO"/> <br>
+<Br/><button id="Add" disabled>Add</button>
+<button id="Modify" disabled> Modify</button>
+<button id="Remove" disabled> Remove</button>
+<button id="Viewall" disabled> View all </button>
+<button id="viewondept" disabled> View on Dept </button>
+<hr/>
+<p id="contents" > here one day we will show contents </p>
+</body>
+</html> 

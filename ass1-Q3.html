@@ -1,0 +1,354 @@
+<html>
+<head>
+<script>
+
+class ItemStatus
+{
+constructor(status,itemobject)
+{
+this.status=false;
+this.itemobject=itemobject;
+}
+
+};
+
+class Item
+{
+constructor(itemno,itemprice,qty)
+{
+this.itemno=itemno;
+this.itemprice=itemprice;
+this.qty=qty;
+}
+
+setItemDetails(itemno,itemprice,qty)
+{
+this.itemno =itemno;
+this.itemprice=itemprice;
+this.qty=qty;
+}
+
+getItemDetails()
+{
+	return this.itemno +  "--" + this.itemprice + "--"  +
+this.qty;	
+}
+
+}
+
+
+
+
+
+
+
+class Logic
+{
+
+constructor(){ 
+
+ this.items=[ new Item(1,4,5),
+	new Item(2,6,7),
+	new Item(3,9,10),
+	new Item(41,123,133) ];
+
+
+}
+
+
+
+getItemDetailsLogic(itemno)
+{
+let output =new ItemStatus(false,{});
+for(let i=0; i < this.items.length; i++)
+{
+if(this.items[i].itemno == itemno )
+{	
+	output.status=true;
+	output.itemobject=this.items[i];
+	break;
+}
+
+}
+return output;
+}
+
+addItemDetailsLogic(input){
+
+    let output=false;
+
+let x = this.getItemDetailsLogic(input.itemno);
+console.log( x.status)
+
+if(!x.status){
+this.items.push(new Item (input.itemno,input.itemprice,input.qty));
+output=true;
+}
+
+return output;
+
+}
+
+
+updateItemDetailsLogic(updateditem)
+{
+console.log(updateditem.itemno);
+let output =false;
+for(let i=0; i < this.items.length; i++)
+{
+if(this.items[i].itemno == updateditem.itemno )
+{	
+
+	this.items[i].setItemDetails(updateditem.itemno,updateditem.itemprice,updateditem.qty);
+	output=true;
+	break;
+}
+
+}
+console.log("inside update function" + output);
+return output;
+}
+
+removeItemDetailsLogic(itemno)
+{
+let output =false;
+for(let i=0; i < this.items.length; i++)
+{
+if(this.items[i].itemno == itemno )
+{	
+	this.items.splice(i,1);
+	output=true;
+	break;
+}
+
+}
+console.log("inside delte function" + output);
+return output;
+}
+
+getAllItems()
+{
+return this.items;
+}
+
+}
+
+
+
+
+
+
+
+
+window.addEventListener('DOMContentLoaded', ()=>{
+
+
+let logic = new Logic();
+
+
+const itemnoid = document.querySelector("#itemno");
+itemnoid.addEventListener('blur',()=>{
+console.log("blur event");
+
+let itemno= document.querySelector("#itemno").value;
+console.log("input is" + itemno);
+let output= logic.getItemDetailsLogic(itemno);
+
+console.log(output.status)
+if(output.status)
+{
+	document.querySelector("#price").value=output.itemobject.itemprice;
+	document.querySelector("#qty").value=output.itemobject.qty;
+	document.querySelector("#add").disabled=false;
+	document.querySelector("#update").disabled=false;
+	document.querySelector("#delete").disabled=false;
+	document.querySelector("#clear").disabled=false;
+	document.querySelector("#msg").innerText="item details found";
+
+}
+else
+{
+    console.log("no item was found");
+    document.querySelector("#add").disabled=false;
+		document.querySelector("#update").disabled=true;
+	document.querySelector("#delete").disabled=true;
+	document.querySelector("#clear").disabled=true;
+	document.querySelector("#msg").innerText="item no not found";
+	document.querySelector("#price").value="";
+	document.querySelector("#qty").value="";
+	
+
+
+}
+});
+const add= document.querySelector("#add");
+add.addEventListener('click',()=>{
+
+
+let input= {itemno:document.querySelector("#itemno").value,
+itemprice:document.querySelector("#price").value,
+qty:document.querySelector("#qty").value};
+
+
+
+console.log(input);
+
+let output=logic.addItemDetailsLogic(input);
+if(output)
+{
+document.querySelector("#msg").innerText="add suceeded";
+document.querySelector("#add").disabled=false;
+document.querySelector("#update").disabled=true;
+	document.querySelector("#delete").disabled=true;
+	document.querySelector("#clear").disabled=true;
+
+}
+else
+{
+document.querySelector("#msg").innerText="add failed";
+document.querySelector("#add").disabled=false;
+document.querySelector("#update").disabled=false;
+	document.querySelector("#delete").disabled=false;
+	document.querySelector("#clear").disabled=false;
+
+}
+
+
+});
+
+
+const update = document.querySelector("#update");
+update.addEventListener('click',()=>{
+
+let input= {itemno:document.querySelector("#itemno").value,
+itemprice:document.querySelector("#price").value,
+qty:document.querySelector("#qty").value};
+
+
+
+console.log(input);
+let output=logic.updateItemDetailsLogic(input);
+if(output)
+{
+document.querySelector("#msg").innerText="update suceeded";
+document.querySelector("#update").disabled=true;
+	document.querySelector("#delete").disabled=true;
+	document.querySelector("#clear").disabled=true;
+	document.querySelector("#itemno").value="";
+	
+	document.querySelector("#price").value="";
+	document.querySelector("#qty").value="";
+
+}
+else
+{
+document.querySelector("#msg").innerText="update failed";
+
+document.querySelector("#update").disabled=true;
+	document.querySelector("#delete").disabled=true;
+	document.querySelector("#clear").disabled=true;
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+const deletebutton = document.querySelector("#delete");
+deletebutton.addEventListener('click',()=>{
+let input= document.querySelector("#itemno").value;
+
+console.log(input);
+let output=logic.removeItemDetailsLogic(input);
+console.log("after delte function" + output);
+
+
+if(output)
+{
+document.querySelector("#msg").innerText="delete suceeded bravery";
+document.querySelector("#update").disabled=true;
+	document.querySelector("#delete").disabled=true;
+	document.querySelector("#clear").disabled=true;
+	document.querySelector("#itemno").value="";
+	
+	document.querySelector("#price").value="";
+	document.querySelector("#qty").value="";
+
+}
+else
+{
+document.querySelector("#msg").innerText="delete failed";
+
+document.querySelector("#update").disabled=true;
+	document.querySelector("#delete").disabled=true;
+	document.querySelector("#clear").disabled=true;
+
+}
+
+
+});
+
+
+
+const clear = document.querySelector("#clear");
+clear.addEventListener('click',()=>{
+console.log("clear event");
+
+itemno:document.querySelector("#itemno").value = " ";
+itemprice:document.querySelector("#price").value = " ";
+qty:document.querySelector("#qty").value = " ";
+
+});
+
+
+function showAllItems()
+{
+console.log("show all items");
+	
+	
+	let output=logic.getAllItems();
+	
+	
+	
+	let msg="";
+	for(let i=0; i < output.length; i++) 
+	  msg+= "<Br/>" + output[i].itemno +  " --- " + output[i].itemprice +
+	  "--"+ output[i].qty;
+	  
+	  document.querySelector("#contents").innerHTML=msg;
+
+
+}
+	
+
+});
+
+</script>
+<style>
+</style>
+</head>
+<body>
+<hr/>
+<input type="text" id="itemno" placeholder="itemno "/>  <span id="msg"> what happened</span>
+<Br/><input type="text" id="price" placeholder="price "/>
+<Br/><input type="text" id="qty" placeholder="qty "/>
+<Br/><button id="add" disabled> Add </button>
+<button id="update" disabled> update item</button>
+<button id="delete" disabled> delete item (courageous) </button>
+<button id="clear" disabled> clear all boxes </button>
+<hr/>
+<p id="contents" > here one day we will show contents </p>
+</body>
+</html>

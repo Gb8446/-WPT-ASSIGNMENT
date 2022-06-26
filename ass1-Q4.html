@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+         window.addEventListener('DOMContentLoaded', () => {
+            console.log("DOMContentLoaded");
+
+            class Employee{
+
+                constructor(empno, name, email, deptid){
+                    this.empno = empno;
+                    this.name = name;
+                    this.email = email;
+                    this.deptid = deptid;
+                }
+            }
+            class Logic{
+                constructor(){
+                    this.Emp = [new Employee(1, "GB", "GB@gmail.com", 10),
+                                new Employee(2, "KB", "KB@gmail.com", 20),
+                                new Employee(3, "JT", "JT@gmail.com", 10),
+                                new Employee(4, "GW", "GW@gmail.com", 30),
+                               
+                            ];
+                }
+
+                //Function to find Employee in the Array of Emp objects
+                findEmp(empno){
+                    let output = {status: false, empdetails: {empno:0, name:"", email:"", deptid:""}};
+                    for(let i=0; i<this.Emp.length; i++){
+                        if(this.Emp[i].empno == empno){
+                            output.status = true;
+                            output.empdetails = this.Emp[i];
+                            break;
+                        }
+                    }
+                    return output;
+                }
+
+                //function to edit Employee Values
+                updateemp(enumb){
+                let ename = window.prompt('Enter Name');
+                let eemail = window.prompt('Enter Email');
+                let edeptid = window.prompt('Enter Department ID');
+                let emptemp = {empno:enumb, name:ename, email:eemail, deptid:edeptid};
+                let output = false;
+                let allow = true;
+                for(let i=0; i<this.Emp.length; i++){
+                    if(this.Emp[i].empno == emptemp.empno && this.Emp[i].name == emptemp.name 
+                    && this.Emp[i].email == emptemp.email && this.Emp[i].deptid == emptemp.deptid){
+                        allow = false;
+                        break;
+                    }
+                }
+                if(allow){
+                    for(let i=0; i<this.Emp.length; i++){
+                        if(this.Emp[i].empno == enumb){
+                            output = true;
+                            this.Emp.splice(i, 1, emptemp);
+                        }
+                    }
+                }
+                return output;
+                }
+
+                //function to remove Employee Values
+                removeEmp(empno){
+                    for(let i=0; i<this.Emp.length; i++){
+                        if(this.Emp[i].empno == empno){
+                            this.Emp.splice(i,1);
+                            break;
+                        }
+                    }
+                }
+
+                //function to display all Employees
+                displayEmp(){
+                    let content = "";
+                    for(let i=0; i<this.Emp.length; i++){
+                        content += "[Emp No : "+this.Emp[i].empno +",  ";
+                        content += "Emp Name : "+this.Emp[i].name +",  ";
+                        content += "Emp Email : "+this.Emp[i].email +",  ";
+                        content += "Emp Dept ID : "+this.Emp[i].deptid +"]\n";
+                    }
+                    return content; 
+                }
+
+                //function to display Employees of particular Dept ID
+                displayEmpdid(id){
+                    let allow = true;
+                    let content = "";
+                    for(let i=0; i<this.Emp.length; i++){
+                        if(this.Emp[i].deptid == id){
+                            content += "[Emp No : "+this.Emp[i].empno +",  ";
+                            content += "Emp Name : "+this.Emp[i].name +",  ";
+                            content += "Emp Email : "+this.Emp[i].email +",  ";
+                            content += "Emp Dept ID : "+this.Emp[i].deptid +"]\n";
+                            allow = false;
+                        }
+                    }
+                    if(allow){
+                        content = "There are no Employees with Dept ID : "+id;
+                    }
+                    return content; 
+                }
+            }
+
+            let logic = new Logic();
+            console.log(logic.Emp);
+            
+            //Blur event to show Employee details if found
+            const num = document.querySelector('#num'); 
+            num.addEventListener('blur', () => {
+                let output = logic.findEmp(num.value);
+
+                if(output.status){
+                    console.log("Employee Found");
+                    document.querySelector('#msg').innerText = "Employee Found";
+                    document.querySelector('#name').value = output.empdetails.name;
+                    document.querySelector('#email').value = output.empdetails.email;
+                    document.querySelector('#deptid').value = output.empdetails.deptid;
+                    document.querySelector('#add').disabled = true;
+                    document.querySelector('#modify').disabled = false;
+                    document.querySelector('#remove').disabled = false;
+                    document.querySelector('#view').disabled = true;
+                    document.querySelector('#viewdid').disabled = true;
+                    document.querySelector('#emparr').innerText = "";
+                }
+                else{
+                    console.log("Employee not Found");
+                    document.querySelector('#msg').innerText = "Employee not Found";
+                    document.querySelector('#name').value = "";
+                    document.querySelector('#email').value = "";
+                    document.querySelector('#deptid').value = "";
+                    document.querySelector('#emparr').innerText = "";
+                    document.querySelector('#add').disabled = false;
+                    document.querySelector('#modify').disabled = true;
+                    document.querySelector('#remove').disabled = true;
+                    document.querySelector('#view').disabled = true;
+                    document.querySelector('#viewdid').disabled = true;
+                }
+            });
+
+            //Adding Employee to the List
+            const add = document.querySelector('#add');
+            add.addEventListener('click', () => {
+                let enumb = document.querySelector('#num').value;
+                let ename = document.querySelector('#name').value;
+                let eemail = document.querySelector('#email').value;
+                let edeptid = document.querySelector('#deptid').value;
+                logic.Emp.push({empno: enumb, name: ename, email: eemail, deptid: edeptid});
+                console.log("Employee added to the List");
+                document.querySelector('#msg').innerText = "Employee added to the List";
+                document.querySelector('#add').disabled = true;
+                document.querySelector('#modify').disabled = true;
+                document.querySelector('#remove').disabled = true;
+                document.querySelector('#view').disabled = false;
+                document.querySelector('#viewdid').disabled = false;
+                document.querySelector('#name').value = "";
+                document.querySelector('#email').value = "";
+                document.querySelector('#deptid').value = "";
+            });
+
+            //Modify values of Emplooyee
+            const modify = document.querySelector('#modify');
+            modify.addEventListener('click', () => {
+                let output = logic.updateemp(+document.querySelector('#num').value);
+                console.log("Employee updated to the List");
+                if(output){
+                    console.log("Employee updated to the List");
+                    document.querySelector('#msg').innerText = "Employee updated to the List";
+                    document.querySelector('#add').disabled = true;
+                    document.querySelector('#modify').disabled = true;
+                    document.querySelector('#remove').disabled = true;
+                    document.querySelector('#view').disabled = false;
+                    document.querySelector('#viewdid').disabled = false;
+                    document.querySelector('#name').value = "";
+                    document.querySelector('#email').value = "";
+                    document.querySelector('#deptid').value = "";
+                }
+                else{
+                    console.log("Employee details can't be repeated");
+                    document.querySelector('#msg').innerText = "Employee details can't be repeated";
+                    document.querySelector('#modify').disabled = false;
+                    document.querySelector('#remove').disabled = false;
+                    document.querySelector('#view').disabled = false;
+                    document.querySelector('#viewdid').disabled = false;
+                    document.querySelector('#name').value = "";
+                    document.querySelector('#email').value = "";
+                    document.querySelector('#deptid').value = "";
+                }
+            });
+
+            //Removing an Employee from the List
+            const remove = document.querySelector('#remove');
+            remove.addEventListener('click', () => {
+                let empno = document.querySelector('#num').value;
+                logic.removeEmp(empno);
+
+                console.log("Employee removed successfully");
+                document.querySelector('#msg').innerText = "Employee removed successfully";
+                document.querySelector('#add').disabled = true;
+                document.querySelector('#modify').disabled = true;
+                document.querySelector('#remove').disabled = true;
+                document.querySelector('#view').disabled = false;
+                document.querySelector('#viewdid').disabled = false;
+                document.querySelector('#name').value = "";
+                document.querySelector('#email').value = "";
+                document.querySelector('#deptid').value = "";
+            });
+
+            //to View all  Employees
+            const view = document.querySelector('#view');
+            view.addEventListener('click', () => {
+                console.log(logic.Emp);
+                document.querySelector('#emparr').innerText = logic.displayEmp();
+            });
+
+            //Display Employees according to Dept ID
+            const viewdid = document.querySelector('#viewdid');
+            viewdid.addEventListener('click', () => {
+                let input = document.querySelector('#deptid').value;
+                if(input == ""){
+                    document.querySelector('#msg').innerText = "Enter DeptID";
+                }
+                else{
+                    document.querySelector('#msg').innerText = "Employees of Dept ID "+input+" are printed below";
+                    document.querySelector('#emparr').innerText = logic.displayEmpdid(input);
+                }
+                
+            })
+         });
+    </script>
+</head>
+<body>
+    <input type="text" id="num" placeholder="Employee No">
+    <span id="msg"></span><br/><br/>
+    <input type="text" id="name" placeholder="Employee Name"><br/><br/>
+    <input type="text" id="email" placeholder="Employee Email"><br/><br/>
+    <input type="text" id="deptid" placeholder="Employee Dept ID"><br/><br/>
+    <button id="add" disabled>Add</button>
+    <button id="modify" disabled>Modify</button>
+    <button id="remove" disabled>Remove</button>
+    <button id="view" disabled>View all</button>
+    <button id="viewdid" disabled>View by Dept ID</button>
+    <br/><br/>
+    <span id="emparr"></span>
+</body>
+</html>
